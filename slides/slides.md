@@ -826,22 +826,22 @@ swreq         1   0   0   1   0   1   0   0
   - my six implementations, each measured in a fresh subprocess
   - the commercial `ubc` Rust binary, as a cold CLI call and as a warm local server
   - Neo4j, a real server in a throwaway Docker container
-- **4 sizes**: 100 to 40 000 needs
+- **4 sizes**: 300 to 40 000 needs
 - **identical rows** are enforced across all lanes, and any mismatch aborts the run
 - **best of 5** runs per data point rules out CPU noise and warm caches
 
 <div class="colhead mt-5"><b>5 workloads</b> · the question each one asks</div>
 
-<div class="flowrow mt-3">
-<div class="node" v-click="1"><div class="t">1 · attribute filter</div><div class="d">which software requirements are open?</div></div>
-<div class="arr" v-click="2">→</div>
-<div class="node" v-click="2"><div class="t">2 · anti-join</div><div class="d">which ones does no test point at?</div></div>
-<div class="arr" v-click="3">→</div>
-<div class="node" v-click="3"><div class="t">3 · two-hop join</div><div class="d">which ones sit under an ASIL-D safety goal?</div></div>
-<div class="arr" v-click="4">→</div>
-<div class="node" v-click="4"><div class="t">4 · transitive closure</div><div class="d">what reaches that safety goal, at any depth?</div></div>
-<div class="arr" v-click="5">→</div>
-<div class="node hot" v-click="5"><div class="t">5 · all of it at once</div><div class="d">open requirements, on an open req, that nothing implements</div></div>
+<div class="flowrow mt-3" v-click="1">
+<div class="node"><div class="t">1 · attribute filter</div><div class="d">which software requirements are open?</div></div>
+<div class="arr">→</div>
+<div class="node"><div class="t">2 · anti-join</div><div class="d">which ones does no test point at?</div></div>
+<div class="arr">→</div>
+<div class="node"><div class="t">3 · two-hop join</div><div class="d">which ones sit under an ASIL-D safety goal?</div></div>
+<div class="arr">→</div>
+<div class="node"><div class="t">4 · transitive closure</div><div class="d">what reaches that safety goal, at any depth?</div></div>
+<div class="arr">→</div>
+<div class="node hot"><div class="t">5 · all of it at once</div><div class="d">open requirements, on an open req, that nothing implements</div></div>
 </div>
 
 <!--
@@ -864,7 +864,7 @@ swreq         1   0   0   1   0   1   0   0
 
 <div class="ub-kicker">benchmarks · 3 of 3</div>
 
-## Results: 100 to 40 000 needs
+## Results: 300 to 40 000 needs
 
 <div class="ub-rule"></div>
 
@@ -1572,44 +1572,6 @@ class: intro
 - More open users, because querying is the thing OSS users hit friction on.
 - More query users, because the capability now exists for free.
 - More tool and platform sales, because every query user is a lead for the paid tier.
--->
-
----
-
-<div class="ub-kicker">recommendation · what's left to sell</div>
-
-## The open language sells all four
-
-<div class="ub-rule"></div>
-
-<div class="prodgrid mt-4">
-<div class="prodcard"><span class="eur">€</span><div class="ico">⚡🖥️</div><div class="t">ubCode</div><div class="d">the fast engine · the IDE</div></div>
-<div class="prodcard"><span class="eur">€</span><div class="ico">🤖</div><div class="t">Pharaoh</div><div class="d">agents on the graph</div></div>
-<div class="prodcard"><span class="eur">€</span><div class="ico">🔏</div><div class="t">ubTrace</div><div class="d">audit-ready traceability</div></div>
-<div class="prodcard"><span class="eur">€</span><div class="ico">🔗</div><div class="t">ubConnect</div><div class="d">writes: the ALM round-trip</div></div>
-</div>
-
-<v-click>
-
-<div class="verdict mt-4">More open users → more query users → <b>more buyers for every € box</b> · none of them is reachable through a <code>MATCH</code>.</div>
-
-</v-click>
-
-<!--
-- This answers the brief's product-market-fit question.
-- What is the paid value proposition after the language is open?
-- ubCode: speed at scale, from the resident incremental Rust engine.
-- The index persists and only changes recompute.
-- The incremental-loading backup slide is the measured proof that pure Python cannot.
-- ubCode also sells the IDE surface: LSP, live validation, in-editor query boxes.
-- Pharaoh: the agent surface, an MCP server and agentic workflows.
-- Every new open query user is a potential agent user.
-- ubTrace: audit-ready traceability and compliance insights.
-- ubConnect: the write path into the ALM world, with round-trip, RBAC and audit.
-- The sales logic: the open language grows the funnel.
-- The same language is the upgrade path: faster, in the IDE, for agents.
-- The write path stays exclusively commercial.
-- The remaining gap sits where the moat slide says: engine plus writes.
 -->
 
 ---
