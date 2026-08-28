@@ -38,6 +38,8 @@ uv run pytest                # 56 tests, both executors
 
 | Command | What you see |
 | --- | --- |
+| `uv run python scripts/query.py "MATCH (r:swreq) WHERE r.status = 'open' RETURN r"` | Runs one query and prints the matches — see below |
+| `uv run python scripts/query.py --engine python --filter "type == 'swreq' and status == 'open'"` | The same selection the way Sphinx-Needs does it today |
 | `uv run pytest` | Engine + shim tests; every engine test runs against **all three** executors |
 | `uv run python examples/compare.py` | Each selection as Python-today vs Cypher on the real 292-need demo graph, with the failure modes live |
 | `uv run python examples/security_rce_poc.py` | `filter_string` exfiltrates an env var at build time; the Cypher parser rejects code by grammar |
@@ -49,6 +51,44 @@ uv run pytest                # 56 tests, both executors
 | `uv run python bench/benchmark.py --with-neo4j` | Adds a Neo4j 5 lane in a throwaway docker container |
 
 The presentation in `slides/` builds with `bun install && bun run dev`.
+
+### Run one query
+
+`scripts/query.py` is the shortest path to seeing the difference — one
+selection, one answer, no benchmark harness. It generates the graph once into
+`bench/graphs/` (gitignored) and reuses it, and reports load and query time
+separately, because that split *is* the argument: the index is built once per
+Sphinx build, the query runs once per directive.
+
+```bash
+uv run python scripts/query.py --size 400000 \
+  "MATCH (r:swreq) WHERE r.status = 'open' RETURN r"
+
+uv run python scripts/query.py --size 400000 --engine python \
+  --filter "type == 'swreq' and status == 'open'"
+```
+
+Both return the identical 50 526 needs on a 400 000-need graph:
+
+| | load (once per build) | query (per directive) |
+| --- | --- | --- |
+| `--engine python` (`filter_string`) | 5 829 ms | **2 029 ms** |
+| `--engine bitmap` (default, fastest) | 2 100 ms | **164 ms** |
+
+These are cold single runs, so they read higher than the best-of-5 benchmark
+table below — that is deliberate, this script does not warm anything.
+
+`--engine` also takes `optimized` and `reference`. And the query that ends the
+speed conversation:
+
+```bash
+uv run python scripts/query.py --size 400000 \
+  "MATCH (r:swreq) WHERE NOT ( (r)<-[:links]-(:test) ) RETURN r"
+```
+
+Around 150 ms for the 5 053 untested requirements — and there is no `--engine python`
+equivalent to compare against, because `filter_string` sees one need at a time
+and never the edge. The shim refuses it rather than mistranslating it.
 
 ## The engine
 
