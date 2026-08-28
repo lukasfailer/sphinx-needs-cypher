@@ -1,0 +1,35 @@
+{
+  "date": "2026-08-27",
+  "reps": 5,
+  "note": "best-of wall clock; incremental numbers include JSON parse + per-need hashing (the file-granular floor) and, for the 1-change case, the cache re-save",
+  "results": [
+    {
+      "needs": 9997,
+      "breakdown_1_change": {
+        "json_parse_s": 0.0055,
+        "link_fields_s": 0.0066,
+        "hash_all_needs_s": 0.0056,
+        "cache_read_s": 0.0147
+      },
+      "full_build_s": 0.024,
+      "one_change_reload_s": 0.0505,
+      "noop_reload_s": 0.0137,
+      "speedup_one_change": 0.48,
+      "speedup_noop": 1.76
+    },
+    {
+      "needs": 39998,
+      "breakdown_1_change": {
+        "json_parse_s": 0.0294,
+        "link_fields_s": 0.0268,
+        "hash_all_needs_s": 0.023,
+        "cache_read_s": 0.0734
+      },
+      "full_build_s": 0.1115,
+      "one_change_reload_s": 0.2625,
+      "noop_reload_s": 0.0741,
+      "speedup_one_change": 0.42,
+      "speedup_noop": 1.5
+    }
+  ]
+}

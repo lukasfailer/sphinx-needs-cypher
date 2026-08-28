@@ -1,0 +1,153 @@
+{
+  "model": "claude-sonnet-5",
+  "tasks": 12,
+  "fs_correct": 9,
+  "cy_correct": 10,
+  "fs_inexpressible": 3,
+  "rows": [
+    {
+      "key": "open_swreqs",
+      "task": "All software requirements (type swreq) with status 'open'.",
+      "truth_n": 24,
+      "fs_expressible": true,
+      "filter_string": "type == 'swreq' and status == 'open'",
+      "fs_correct": true,
+      "fs_n": 24,
+      "cypher": "MATCH (r:swreq) WHERE r.status = 'open' RETURN r",
+      "cy_correct": true,
+      "cy_n": 24
+    },
+    {
+      "key": "asil_d_goals",
+      "task": "All safety goals (type safety_goal) rated asil 'D'.",
+      "truth_n": 20,
+      "fs_expressible": true,
+      "filter_string": "type == 'safety_goal' and asil == 'D'",
+      "fs_correct": true,
+      "fs_n": 20,
+      "cypher": "MATCH (n:safety_goal) WHERE n.asil = 'D' RETURN n",
+      "cy_correct": true,
+      "cy_n": 20
+    },
+    {
+      "key": "tagged_safety",
+      "task": "All needs (any type) that carry the tag 'safety'.",
+      "truth_n": 13,
+      "fs_expressible": true,
+      "filter_string": "'safety' in tags",
+      "fs_correct": true,
+      "fs_n": 13,
+      "cypher": "MATCH (n) WHERE 'safety' IN n.tags RETURN n",
+      "cy_correct": true,
+      "cy_n": 13
+    },
+    {
+      "key": "all_closed",
+      "task": "All needs (any type) with status 'closed'.",
+      "truth_n": 18,
+      "fs_expressible": true,
+      "filter_string": "status == 'closed'",
+      "fs_correct": true,
+      "fs_n": 18,
+      "cypher": "MATCH (n) WHERE n.status = 'closed' RETURN n",
+      "cy_correct": true,
+      "cy_n": 18
+    },
+    {
+      "key": "impl_nonempty",
+      "task": "All implementations (type impl) that implement at least one need (their implements list is non-empty).",
+      "truth_n": 39,
+      "fs_expressible": true,
+      "filter_string": "type == 'impl' and len(implements) > 0",
+      "fs_correct": true,
+      "fs_n": 39,
+      "cypher": "MATCH (n:impl) WHERE size(n.implements) > 0 RETURN n",
+      "cy_correct": false,
+      "cy_error": "CypherSyntaxError(\"expected RETURN but found LPAREN '(' at column 25\")"
+    },
+    {
+      "key": "tests_of_swreq13",
+      "task": "All tests (type test) whose links field contains SWREQ_013.",
+      "truth_n": 1,
+      "fs_expressible": true,
+      "filter_string": "type == 'test' and 'SWREQ_013' in links",
+      "fs_correct": true,
+      "fs_n": 1,
+      "cypher": "MATCH (t:test)-[:links]->(r) WHERE r.id = 'SWREQ_013' RETURN t",
+      "cy_correct": true,
+      "cy_n": 1
+    },
+    {
+      "key": "swarch002_targets",
+      "task": "All needs that SWARCH_002 points at through its links field.",
+      "truth_n": 3,
+      "fs_expressible": true,
+      "filter_string": "\"SWARCH_002\" in links_back",
+      "fs_correct": true,
+      "fs_n": 3,
+      "cypher": "MATCH (s:swarch {id: 'SWARCH_002'})-[:links]->(n) RETURN n",
+      "cy_correct": true,
+      "cy_n": 3
+    },
+    {
+      "key": "fsr_from_sg01",
+      "task": "All functional safety requirements (type fsr) that derive directly from the safety goal SG_01 (via derives_from).",
+      "truth_n": 9,
+      "fs_expressible": true,
+      "filter_string": "type == 'fsr' and 'SG_01' in derives_from",
+      "fs_correct": true,
+      "fs_n": 9,
+      "cypher": "MATCH (r:fsr)-[:derives_from]->(sg:safety_goal {id: 'SG_01'}) RETURN r",
+      "cy_correct": true,
+      "cy_n": 9
+    },
+    {
+      "key": "untraced_swreqs",
+      "task": "All software requirements (type swreq) that nothing links to: no other need points at them through ANY link type.",
+      "truth_n": 2,
+      "fs_expressible": true,
+      "filter_string": "type == 'swreq' and not any([links_back, parent_needs_back, author_back, based_on_back, implements_back, depends_on_back, realizes_back, spec_back, specs_back, runs_back, mitigates_back, reqs_back, derives_from_back, consumes_back, provides_back, provided_by_back, uses_back, startup_calls_back, shutdown_calls_back, release_back, persons_back])",
+      "fs_correct": true,
+      "fs_n": 2,
+      "cypher": "MATCH (r:swreq) WHERE NOT ( ()-->(r) ) RETURN r",
+      "cy_correct": true,
+      "cy_n": 2
+    },
+    {
+      "key": "swreq_no_test",
+      "task": "All software requirements (type swreq) that no test (type test) points at through any link type.",
+      "truth_n": 8,
+      "fs_expressible": false,
+      "filter_string": "type == 'swreq' and not any(i.startswith('test') for i in (links_back + parent_needs_back + author_back + based_on_back + implements_back + depends_on_back + realizes_back + spec_back + specs_back + runs_back + mitigates_back + reqs_back + derives_from_back + consumes_back + provides_back + provided_by_back + uses_back + startup_calls_back + shutdown_calls_back + release_back + persons_back))",
+      "fs_correct": false,
+      "fs_n": 32,
+      "cypher": "MATCH (r:swreq)\nWHERE NOT ( ()-[:test]->(r) )\nRETURN r",
+      "cy_correct": false,
+      "cy_n": 32
+    },
+    {
+      "key": "sysreq_to_sg01",
+      "task": "All system requirements (type sysreq) that implement a functional safety requirement (type fsr) which derives directly from the safety goal SG_01: sysreq -implements-> fsr -derives_from-> SG_01.",
+      "truth_n": 4,
+      "fs_expressible": false,
+      "filter_string": "This can't be written as a single filter_string. The mechanism only exposes the *current* need's own attributes \u2014 a sysreq's `implements` list gives you fsr ids, but `derives_from` (whether that fsr points at `SG_01`) lives on the fsr need, not on the sysreq. There's no cross-need lookup, loop, or function available to dereference `implements` into another need's fields, so the second hop (`fsr -derives_from-> SG_01`) is structurally unreachable from a sysreq's own field dict \u2014 even the `_back` reverse fields don't help, since those are one-hop reverses on the *other* need (e.g. `SG_01`'s `derives_from_back` lists the fsrs, not the sysreqs).\n\nTo get this in Sphinx-Needs you'd normally do it in two stages, e.g.:\n\n1. Filter fsrs: `type == 'fsr' and 'SG_01' in derives_from` \u2192 collect their ids.\n2. Filter sysreqs whose `implements` intersects that id set \u2014 but step 2's condition depends on step 1's result, which isn't expressible inside one need-scoped `filter_string` either (you'd need the concrete id list baked in, or a two-directive/dynamic-function setup outside the filter_string sandbox).\n\nIf you can tell me the actual fsr id(s) that derive from `SG_01` (or point me at the source file so I can look it up), I can give you an exact one-line filter_string for step 2, e.g.:\n\n`type == 'sysreq' and any(x in implements for x in ['FSR_01', 'FSR_02'])`\n\nWant me to look up the concrete fsr ids, or do you have them handy?",
+      "fs_correct": false,
+      "fs_n": 0,
+      "cypher": "MATCH (r:sysreq)-[:implements]->(f:fsr)-[:derives_from]->(sg {id: 'SG_01'})\nRETURN r",
+      "cy_correct": true,
+      "cy_n": 4
+    },
+    {
+      "key": "reach_sg01",
+      "task": "All needs from which the safety goal SG_01 is reachable through one or more directed links of any type (direct or transitive).",
+      "truth_n": 13,
+      "fs_expressible": false,
+      "filter_string": "'SG_01' in links or 'SG_01' in parent_needs or 'SG_01' in author or 'SG_01' in based_on or 'SG_01' in implements or 'SG_01' in depends_on or 'SG_01' in realizes or 'SG_01' in spec or 'SG_01' in specs or 'SG_01' in runs or 'SG_01' in mitigates or 'SG_01' in reqs or 'SG_01' in derives_from or 'SG_01' in consumes or 'SG_01' in provides or 'SG_01' in provided_by or 'SG_01' in uses or 'SG_01' in startup_calls or 'SG_01' in shutdown_calls or 'SG_01' in release or 'SG_01' in persons",
+      "fs_correct": false,
+      "fs_n": 0,
+      "cypher": "MATCH (n)-[*1..]->(sg:safety_goal {id: 'SG_01'}) RETURN n",
+      "cy_correct": true,
+      "cy_n": 13
+    }
+  ]
+}
