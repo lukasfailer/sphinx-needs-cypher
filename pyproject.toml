@@ -1,0 +1,41 @@
+[project]
+name = "needquery"
+version = "0.1.0"
+description = "A declarative openCypher node-selection surface for Sphinx-Needs — a pure-Python reference engine, a planned executor, and a measured benchmark against the alternatives."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Lukas Failer" }]
+keywords = ["sphinx", "sphinx-needs", "opencypher", "cypher", "graph", "requirements"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Framework :: Sphinx :: Extension",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Documentation :: Sphinx",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/lukasfailer/sphinx-needs-cypher"
+Repository = "https://github.com/lukasfailer/sphinx-needs-cypher"
+
+[project.optional-dependencies]
+sphinx = ["sphinx>=8.2", "sphinx-needs>=8.3,<9"]
+bench = ["cython>=3.1", "setuptools", "neo4j>=5"]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/needquery"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+pythonpath = ["src"]
