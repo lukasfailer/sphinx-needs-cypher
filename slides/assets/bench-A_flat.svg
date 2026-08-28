@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 460" font-family="JetBrains Mono, monospace" font-size="12">
+<line x1="64" y1="416.0" x2="680" y2="416.0" stroke="#303030" stroke-width="1"/><text x="56" y="420.0" fill="#a2a2a2" text-anchor="end">0.00 ms</text>
+<line x1="64" y1="350.0" x2="680" y2="350.0" stroke="#303030" stroke-width="1"/><text x="56" y="354.0" fill="#a2a2a2" text-anchor="end">0.01 ms</text>
+<line x1="64" y1="284.0" x2="680" y2="284.0" stroke="#303030" stroke-width="1"/><text x="56" y="288.0" fill="#a2a2a2" text-anchor="end">0.10 ms</text>
+<line x1="64" y1="218.0" x2="680" y2="218.0" stroke="#303030" stroke-width="1"/><text x="56" y="222.0" fill="#a2a2a2" text-anchor="end">1.0 ms</text>
+<line x1="64" y1="152.0" x2="680" y2="152.0" stroke="#303030" stroke-width="1"/><text x="56" y="156.0" fill="#a2a2a2" text-anchor="end">10 ms</text>
+<line x1="64" y1="86.0" x2="680" y2="86.0" stroke="#303030" stroke-width="1"/><text x="56" y="90.0" fill="#a2a2a2" text-anchor="end">100 ms</text>
+<line x1="64" y1="20.0" x2="680" y2="20.0" stroke="#303030" stroke-width="1"/><text x="56" y="24.0" fill="#a2a2a2" text-anchor="end">1.0 s</text>
+<line x1="64.0" y1="416" x2="64.0" y2="421" stroke="#303030"/><text x="64.0" y="436" fill="#a2a2a2" text-anchor="middle">99</text>
+<line x1="177.8" y1="416" x2="177.8" y2="421" stroke="#303030"/><text x="177.8" y="436" fill="#a2a2a2" text-anchor="middle">300</text>
+<line x1="301.4" y1="416" x2="301.4" y2="421" stroke="#303030"/><text x="301.4" y="436" fill="#a2a2a2" text-anchor="middle">1k</text>
+<line x1="537.7" y1="416" x2="537.7" y2="421" stroke="#303030"/><text x="537.7" y="436" fill="#a2a2a2" text-anchor="middle">10k</text>
+<line x1="680.0" y1="416" x2="680.0" y2="421" stroke="#303030"/><text x="680.0" y="436" fill="#a2a2a2" text-anchor="middle">40k</text>
+<text x="372" y="454" fill="#a2a2a2" text-anchor="middle">needs in the project (log)</text>
+<path d="M64.0,293.0 L177.8,262.9 L301.4,232.8 L537.7,165.7 L680.0,125.8" fill="none" stroke="#9aa5ad" stroke-width="2.5"/>
+<circle cx="64.0" cy="293.0" r="3.5" fill="#9aa5ad"/>
+<circle cx="177.8" cy="262.9" r="3.5" fill="#9aa5ad"/>
+<circle cx="301.4" cy="232.8" r="3.5" fill="#9aa5ad"/>
+<circle cx="537.7" cy="165.7" r="3.5" fill="#9aa5ad"/>
+<circle cx="680.0" cy="125.8" r="3.5" fill="#9aa5ad"/>
+<text x="692.0" y="129.8" fill="#9aa5ad">Cypher · naive interpreter — 25 ms</text>
+<path d="M64.0,319.5 L177.8,305.6 L301.4,280.8 L537.7,217.9 L680.0,177.2" fill="none" stroke="#e4ff3e" stroke-width="2.5"/>
+<circle cx="64.0" cy="319.5" r="3.5" fill="#e4ff3e"/>
+<circle cx="177.8" cy="305.6" r="3.5" fill="#e4ff3e"/>
+<circle cx="301.4" cy="280.8" r="3.5" fill="#e4ff3e"/>
+<circle cx="537.7" cy="217.9" r="3.5" fill="#e4ff3e"/>
+<circle cx="680.0" cy="177.2" r="3.5" fill="#e4ff3e"/>
+<text x="692.0" y="181.2" fill="#e4ff3e">Cypher · + query planner — 4.2 ms</text>
+<path d="M64.0,323.7 L177.8,310.3 L301.4,287.0 L537.7,223.9 L680.0,183.4" fill="none" stroke="#7cff9b" stroke-width="2.5" stroke-dasharray="6 4"/>
+<circle cx="64.0" cy="323.7" r="3.5" fill="#7cff9b"/>
+<circle cx="177.8" cy="310.3" r="3.5" fill="#7cff9b"/>
+<circle cx="301.4" cy="287.0" r="3.5" fill="#7cff9b"/>
+<circle cx="537.7" cy="223.9" r="3.5" fill="#7cff9b"/>
+<circle cx="680.0" cy="183.4" r="3.5" fill="#7cff9b"/>
+<text x="692.0" y="203.4" fill="#7cff9b">Cypher · + Cython — 3.3 ms</text>
+</svg>

@@ -1,0 +1,258 @@
+/* useblocks corporate identity — lime accent on near-black, Inter + JetBrains Mono.
+   Palette lifted from useblocks.com: --swatch--brand-1 #ecf15e, hero accent #E4FF3E,
+   --swatch--neutral-darkest #0b0c10, --neutral-darker #141617, --neutral #303030. */
+:root {
+  --ub-bg: #0b0c10;
+  --ub-bg-2: #141617;
+  --ub-panel: #1d1e1f;
+  --ub-line: #303030;
+  --ub-lime: #e4ff3e;
+  --ub-lime-soft: #ecf15e;
+  --ub-text: #f3f3f3;
+  --ub-muted: #a2a2a2;
+  --ub-good: #7CFF9B;
+  --ub-bad: #ff6b6b;
+}
+.slidev-layout {
+  background: var(--ub-bg);
+  color: var(--ub-text);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "cv02","cv03","cv04","cv11";
+}
+.slidev-layout h1, .slidev-layout h2, .slidev-layout h3 {
+  color: var(--ub-text);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.slidev-layout h1 { font-size: 2.4rem; line-height: 1.1; }
+.slidev-layout h1 + p { color: var(--ub-muted); }
+.slidev-layout a { color: var(--ub-lime); }
+.slidev-layout strong { color: var(--ub-lime-soft); font-weight: 700; }
+.slidev-layout code { font-family: "JetBrains Mono", ui-monospace, monospace; }
+.slidev-layout pre, .slidev-layout .shiki {
+  background: var(--ub-bg-2) !important;
+  border: 1px solid var(--ub-line);
+  border-radius: 8px;
+  font-size: 0.82rem;
+}
+/* accent bar under section titles */
+.ub-rule { height: 4px; width: 64px; background: var(--ub-lime); border-radius: 2px; margin: 0.2rem 0 1rem; }
+.ub-kicker { color: var(--ub-lime); font-family: "JetBrains Mono", monospace; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; }
+table { border-collapse: collapse; width: 100%; font-size: 0.82rem; }
+th, td { border: 1px solid var(--ub-line); padding: 6px 10px; text-align: left; vertical-align: top; }
+th { background: var(--ub-panel); color: var(--ub-lime-soft); }
+.good { color: var(--ub-good); font-weight: 600; }
+.bad { color: var(--ub-bad); font-weight: 600; }
+.muted { color: var(--ub-muted); }
+.big { font-size: 3.2rem; font-weight: 800; color: var(--ub-lime); line-height: 1; font-family: "JetBrains Mono", monospace; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.card { background: var(--ub-bg-2); border: 1px solid var(--ub-line); border-left: 3px solid var(--ub-lime); border-radius: 8px; padding: 0.7rem 0.9rem; }
+.slidev-layout.cover, .slidev-layout.intro { background: radial-gradient(1200px 500px at 20% -10%, #17301a 0%, var(--ub-bg) 55%); }
+
+/* --- v2 additions: node/stat visuals, 3-col grids, timeline chips --- */
+.cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+.stat { background: var(--ub-bg-2); border: 1px solid var(--ub-line); border-radius: 10px; padding: 0.8rem 1rem; text-align: center; }
+.stat .n { font-family: "JetBrains Mono", monospace; font-weight: 800; font-size: 1.9rem; color: var(--ub-lime); line-height: 1.1; }
+.stat .l { color: var(--ub-muted); font-size: 0.72rem; margin-top: 0.25rem; }
+.chip { display: inline-block; background: var(--ub-panel); border: 1px solid var(--ub-line); border-radius: 999px; padding: 0.15rem 0.7rem; font-family: "JetBrains Mono", monospace; font-size: 0.7rem; color: var(--ub-text); }
+.chip.lime { border-color: var(--ub-lime); color: var(--ub-lime); }
+.flowrow { display: flex; align-items: stretch; gap: 0.5rem; }
+.flowrow .node { flex: 1; background: var(--ub-bg-2); border: 1px solid var(--ub-line); border-radius: 10px; padding: 0.6rem 0.8rem; }
+.flowrow .node.hot { border-color: var(--ub-lime); }
+.flowrow .arr { align-self: center; color: var(--ub-lime); font-weight: 800; font-family: "JetBrains Mono", monospace; }
+.node .t { font-weight: 700; font-size: 0.85rem; }
+.node .d { color: var(--ub-muted); font-size: 0.72rem; margin-top: 0.15rem; }
+.node .dgr { color: var(--ub-bad); font-size: 0.7rem; margin-top: 0.35rem; }
+.ladder td { border: none; border-bottom: 1px solid var(--ub-line); font-family: "JetBrains Mono", monospace; padding: 5px 8px; }
+.tight table { font-size: 0.76rem; }
+.tight th, .tight td { padding: 4px 8px; }
+.small { font-size: 0.78rem; }
+.xsmall { font-size: 0.7rem; }
+.open { color: var(--ub-good); }
+.closed { color: var(--ub-bad); }
+
+/* --- v3: one-strategy slides, pros/cons, verdict callout, legend --- */
+.what { background: var(--ub-panel); border: 1px solid var(--ub-line); border-radius: 8px; padding: 0.6rem 0.9rem; font-size: 0.95rem; }
+.what ul > li { margin: 0.18rem 0; }
+.proscons { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+.pro { border: 1px solid #2a3a2a; border-left: 3px solid var(--ub-good); border-radius: 8px; padding: 0.6rem 0.9rem; background: #0e140f; }
+.con { border: 1px solid #3a2a2a; border-left: 3px solid var(--ub-bad); border-radius: 8px; padding: 0.6rem 0.9rem; background: #140e0e; }
+.pro h4, .con h4 { margin: 0 0 0.3rem; font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.pro h4 { color: var(--ub-good); }
+.con h4 { color: var(--ub-bad); }
+.pro ul, .con ul { margin: 0; padding: 0; font-size: 0.88rem; }
+.pro li::before { color: var(--ub-good); }
+.con li::before { color: var(--ub-bad); }
+.verdict { background: linear-gradient(90deg, rgba(228,255,62,0.12), transparent); border: 1px solid var(--ub-lime); border-radius: 8px; padding: 0.6rem 1rem; margin-top: 1rem; font-size: 1.05rem; }
+.legend { font-size: 0.72rem; color: var(--ub-muted); margin-top: 0.6rem; }
+.legend .cy { color: var(--ub-lime); font-weight: 700; }
+.legend .py { color: #ffb45e; font-weight: 700; }
+.grp-py { color: #ffb45e; }
+.grp-cy { color: var(--ub-lime); }
+
+/* --- v4: screenshots, benchmark chart --- */
+.shot { border: 1px solid var(--ub-line); border-radius: 8px; max-height: 225px; width: 100%; object-fit: cover; object-position: top; }
+.benchimg { width: 92%; max-height: 330px; }
+
+/* --- v5: one bullet style for the whole deck, no browser defaults --- */
+.slidev-layout ul { list-style: none; padding-left: 0; margin: 0.2rem 0; }
+.slidev-layout ul > li { position: relative; padding-left: 1.05rem; margin: 0.22rem 0; }
+.slidev-layout ul > li::before {
+  content: "▪";
+  position: absolute;
+  left: 0;
+  top: 0.05em;
+  color: var(--ub-lime);
+  font-size: 0.72em;
+  line-height: inherit;
+}
+.slidev-layout li p { margin: 0; display: inline; }
+
+/* info caption rows under code, aligned like a table */
+.info { display: flex; align-items: baseline; gap: 0.5rem; background: var(--ub-bg-2); border: 1px solid var(--ub-line); border-radius: 8px; padding: 0.45rem 0.7rem; font-size: 0.78rem; color: var(--ub-muted); }
+.info .i { flex: none; color: var(--ub-muted); font-size: 0.95rem; line-height: 1; transform: translateY(1px); }
+
+/* glyph result lines: ✗ wrong, ✓ correct, → consequence */
+.mark { display: flex; align-items: baseline; gap: 0.5rem; margin: 0.3rem 0; font-size: 0.88rem; }
+.mark .g { flex: none; width: 1rem; text-align: center; font-weight: 700; color: var(--ub-muted); }
+.mark.bad { color: var(--ub-bad); }
+.mark.bad .g { color: var(--ub-bad); }
+.mark.ok { color: var(--ub-good); }
+.mark.ok .g { color: var(--ub-good); }
+
+/* extra-compact table for the 4-option scorecard */
+.tight2 table { font-size: 0.7rem; }
+.tight2 th, .tight2 td { padding: 3px 8px; }
+
+/* --- v6: section TOC, implementation walkthrough, click overlays --- */
+.toc { display: flex; flex-direction: column; gap: 0.9rem; max-width: 440px; }
+.toc-item { display: flex; align-items: baseline; gap: 0.9rem; font-size: 1.2rem; font-weight: 600; border-bottom: 1px solid var(--ub-line); padding-bottom: 0.55rem; }
+.toc-item .n { font-family: "JetBrains Mono", monospace; color: var(--ub-lime); font-size: 0.85rem; }
+
+.impl { border: 1px solid var(--ub-line); border-radius: 8px; padding: 0.5rem 0.85rem; margin: 0.4rem 0; background: var(--ub-bg-2); transition: border-color 0.15s, background 0.15s, box-shadow 0.15s; }
+.impl .t { font-weight: 700; font-size: 0.9rem; }
+.impl .d { color: var(--ub-muted); font-size: 0.72rem; margin-top: 0.1rem; }
+.impl.active { border-color: var(--ub-lime); background: var(--ub-panel); box-shadow: 0 0 0 1px var(--ub-lime); }
+.impl-detail { position: relative; }
+.impl-detail .what { position: absolute; top: 0; left: 0; right: 0; }
+
+.bench-overlay { position: absolute; left: 6%; right: 6%; top: 44%; z-index: 5; }
+.bench-overlay .node { background: var(--ub-panel); border: 1px solid var(--ub-lime); border-radius: 10px; padding: 0.6rem 0.85rem; box-shadow: 0 10px 34px rgba(0, 0, 0, 0.65); }
+
+.overlay-verdict { position: absolute; left: 13%; right: 13%; top: 40%; z-index: 6; background: #1d1e14; border: 2px solid var(--ub-lime); border-radius: 10px; padding: 1rem 1.4rem; font-size: 1.05rem; box-shadow: 0 14px 44px rgba(0, 0, 0, 0.75); }
+
+.arrline { color: var(--ub-muted); font-family: "JetBrains Mono", monospace; font-size: 0.72rem; margin: 0.3rem 0; }
+.graphsvg { width: 100%; max-height: 300px; }
+
+/* Slidev 0.49 quirk: the goto-dialog autocomplete list renders even while the
+   dialog itself is parked off-screen (-top-20). Hide it in that state only. */
+.fixed.-top-20 .autocomplete-list { display: none; }
+
+/* --- v7: 15-minute cut — risk boxes, strategy layer strips, artifact grid --- */
+.risk { border: 1px solid var(--ub-bad); background: #140e0e; color: var(--ub-bad); border-radius: 6px; padding: 0.3rem 0.55rem; font-size: 0.7rem; margin-top: 0.4rem; }
+.risk b { color: var(--ub-bad); }
+.layers { display: flex; gap: 0.45rem; margin: 0.7rem 0 0.2rem; font-family: "JetBrains Mono", monospace; font-size: 0.72rem; }
+.layers .lyr { flex: 1; text-align: center; border-radius: 8px; padding: 0.4rem 0.5rem; border: 1px solid var(--ub-line); color: var(--ub-muted); background: var(--ub-bg-2); }
+.layers .lyr b { display: block; font-size: 0.78rem; }
+.layers .lyr.open { border-color: var(--ub-good); background: #0e140f; }
+.layers .lyr.open b { color: var(--ub-good); }
+.layers .lyr.paid { border-color: var(--ub-bad); background: #140e0e; }
+.layers .lyr.paid b { color: var(--ub-bad); }
+.node .ico { font-size: 1.7rem; line-height: 1.2; }
+/* dense two-column compare slide: smaller code blocks, tighter marks */
+.compact pre, .compact .shiki { font-size: 0.68rem !important; margin: 0.25rem 0 !important; }
+.compact pre code { line-height: 1.45 !important; }
+.compact .mark { margin: 0.18rem 0; font-size: 0.8rem; }
+.compact .chip { font-size: 0.62rem; padding: 0.05rem 0.5rem; }
+.compact .what { padding: 0.4rem 0.8rem; }
+.panelcode { font-family: "JetBrains Mono", monospace; font-size: 0.66rem; line-height: 1.55; background: var(--ub-bg); border: 1px solid var(--ub-line); border-radius: 6px; padding: 0.4rem 0.6rem; margin: 0.35rem 0; color: var(--ub-text); white-space: pre; overflow-x: hidden; }
+.panelcode .c { color: #6f7a52; }
+.artgrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+.artgrid .node { text-align: center; padding: 1rem 0.8rem; }
+.artgrid .ico { font-size: 2rem; line-height: 1; margin-bottom: 0.45rem; }
+.artgrid .t { font-size: 0.95rem; }
+.artgrid .d { font-size: 0.76rem; }
+
+/* --- v8: moat layer stack (visual language from the ecosystem slide:
+   dashed lime = open, solid grey + € = commercial) --- */
+.stk { display: flex; flex-direction: column; gap: 0.5rem; }
+.stk .lay { display: flex; align-items: baseline; gap: 1rem; border-radius: 10px; padding: 0.55rem 1rem; background: var(--ub-bg-2); border: 1px solid #565b60; }
+.stk .lay .nm { font-weight: 700; font-size: 0.9rem; flex: none; }
+.stk .lay .why { color: var(--ub-muted); font-size: 0.74rem; flex: 1; }
+.stk .lay .tag { font-family: "JetBrains Mono", monospace; font-size: 0.72rem; flex: none; }
+.stk .lay.oss { border: 1.5px dashed var(--ub-lime); background: transparent; }
+.stk .lay.oss .tag { color: var(--ub-lime); }
+
+/* product cards, styled like the corporate ecosystem map (€ tag top-right) */
+.prodgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+.prodcard { position: relative; background: var(--ub-bg-2); border: 1px solid #565b60; border-radius: 14px; padding: 1.5rem 1rem 1.1rem; text-align: center; }
+.prodcard .eur { position: absolute; top: 0.55rem; right: 0.85rem; color: var(--ub-muted); font-family: "JetBrains Mono", monospace; font-size: 0.85rem; }
+.prodcard .ico { font-size: 2.1rem; line-height: 1.1; }
+.prodcard .t { font-weight: 700; font-size: 1.05rem; margin-top: 0.35rem; }
+.prodcard .d { color: var(--ub-muted); font-size: 0.78rem; margin-top: 0.2rem; }
+
+/* bit-row visual for the bitmap-index backup slide */
+.bitrows { font-family: "JetBrains Mono", monospace; font-size: 0.8rem; line-height: 1.7; background: var(--ub-bg-2); border: 1px solid var(--ub-line); border-radius: 8px; padding: 0.6rem 0.9rem; color: var(--ub-text); }
+.bitrows .hl { color: var(--ub-lime); font-weight: 700; }
+
+/* --- v9: implementation walkthrough — code + diagram + bullets, one per slide --- */
+.implhead { display: flex; align-items: baseline; gap: 0.7rem; flex-wrap: wrap; margin: -0.4rem 0 0.2rem; }
+.timepill { font-family: "JetBrains Mono", monospace; font-size: 0.72rem; border: 1px solid var(--ub-line); border-radius: 999px; padding: 0.12rem 0.7rem; color: var(--ub-muted); white-space: nowrap; }
+.timepill b { color: var(--ub-text); font-weight: 700; }
+figure { margin: 0; }
+.diagram { background: var(--ub-bg-2); border: 1px solid var(--ub-line); border-radius: 12px; padding: 0.7rem 0.9rem; }
+.diagram .graphsvg { width: 100%; }
+.diagram .bitrows { border: none; background: transparent; padding: 0.2rem 0; font-size: 0.72rem; }
+.diagram figcaption { color: var(--ub-muted); font-family: "JetBrains Mono", monospace; font-size: 0.7rem; margin-top: 0.4rem; }
+.limits { color: var(--ub-muted); font-size: 0.76rem; margin-top: 0.5rem; }
+.limits b { color: var(--ub-bad); font-weight: 600; }
+.limits b.good { color: var(--ub-good); }
+.node .ms { font-family: "JetBrains Mono", monospace; font-size: 0.8rem; font-weight: 700; color: var(--ub-lime); margin-top: 0.4rem; }
+.node .ms.bad { color: var(--ub-bad); }
+.node .ms.good { color: var(--ub-good); }
+
+/* column headings without a box (the two-problems slide) */
+.colhead { font-size: 0.92rem; padding-bottom: 0.35rem; border-bottom: 1px solid var(--ub-line); margin-bottom: 0.5rem; }
+
+/* verdict rendered as an arrow, not a box */
+.arrowbox {
+  background: linear-gradient(90deg, rgba(228, 255, 62, 0.16), rgba(228, 255, 62, 0.03));
+  border-left: 3px solid var(--ub-lime);
+  clip-path: polygon(0 0, calc(100% - 26px) 0, 100% 50%, calc(100% - 26px) 100%, 0 100%);
+  padding: 0.7rem 3rem 0.7rem 1rem;
+  font-size: 1.02rem;
+}
+
+/* --- v10: producer/consumer strip on the recommendation slide --- */
+.flowrow .node.oss { border: 1.5px dashed var(--ub-lime); background: transparent; }
+.flowrow .node.paid { border: 1px solid #565b60; }
+.node .add { color: var(--ub-lime); font-family: "JetBrains Mono", monospace; font-size: 0.72rem; font-weight: 700; margin-top: 0.45rem; }
+
+/* --- v11: OSS / commercial badges, useblocks ecosystem map --- */
+.badge { display: inline-block; font-family: "JetBrains Mono", monospace; font-size: 0.66rem; letter-spacing: 0.08em; border-radius: 5px; padding: 0.12rem 0.5rem; }
+.badge.oss { border: 1px dashed var(--ub-lime); color: var(--ub-lime); }
+.badge.paid { border: 1px solid #565b60; color: var(--ub-muted); }
+
+.eco { display: grid; grid-template-columns: 1fr auto 1.35fr auto 1fr; gap: 0.6rem; align-items: stretch; }
+.ecocol { display: flex; flex-direction: column; gap: 0.6rem; justify-content: center; }
+.ecorow { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+.ecobox { position: relative; background: var(--ub-bg-2); border: 1px solid #565b60; border-radius: 10px; padding: 0.7rem 0.8rem 0.6rem; text-align: center; flex: 1; }
+.ecobox.oss { border: 1.4px dashed var(--ub-lime); background: transparent; }
+.ecobox .nm { font-weight: 700; font-size: 0.95rem; }
+.ecobox .ds { color: var(--ub-muted); font-size: 0.68rem; margin-top: 0.15rem; line-height: 1.35; }
+.ecobox .tag { position: absolute; top: 0.35rem; right: 0.55rem; font-family: "JetBrains Mono", monospace; font-size: 0.62rem; color: var(--ub-muted); }
+.ecobox.oss .tag { color: var(--ub-lime); }
+.ecobox .tag.right { right: auto; left: 0.55rem; color: var(--ub-muted); }
+.ecobox.pharaoh .tag { color: var(--ub-lime); }
+.ecobox.pharaoh .tag.right { color: var(--ub-muted); }
+.ecobox.pharaoh { display: flex; align-items: baseline; justify-content: center; gap: 0.8rem; text-align: left; border: 1.4px dashed var(--ub-lime); }
+.ecoarr { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #565b60; font-size: 1.3rem; }
+.ecoarr.move { justify-content: flex-start; padding-top: 1.6rem; color: var(--ub-lime); }
+.ecoarr.move .lbl { font-family: "JetBrains Mono", monospace; font-size: 0.72rem; font-weight: 700; color: var(--ub-lime); }
+.ecoarr.move .ar { font-size: 1.6rem; line-height: 1; color: var(--ub-lime); }
+.ecolabels { display: grid; grid-template-columns: 1fr auto 1.35fr auto 1fr; gap: 0.6rem; margin-top: 0.5rem; text-align: center; font-weight: 700; font-size: 0.85rem; color: var(--ub-muted); }
+.ecolabels > div:nth-child(1) { grid-column: 1; }
+.ecolabels > div:nth-child(2) { grid-column: 3; }
+.ecolabels > div:nth-child(3) { grid-column: 5; }
+.ecoup { font-size: 1.05rem; margin: 0.15rem 0; }
+.ecoup b { color: var(--ub-lime); font-family: "JetBrains Mono", monospace; }

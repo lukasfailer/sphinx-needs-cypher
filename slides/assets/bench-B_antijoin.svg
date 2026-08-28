@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 460" font-family="JetBrains Mono, monospace" font-size="12">
+<line x1="64" y1="416.0" x2="680" y2="416.0" stroke="#303030" stroke-width="1"/><text x="56" y="420.0" fill="#a2a2a2" text-anchor="end">10 µs</text>
+<line x1="64" y1="359.4" x2="680" y2="359.4" stroke="#303030" stroke-width="1"/><text x="56" y="363.4" fill="#a2a2a2" text-anchor="end">0.10 ms</text>
+<line x1="64" y1="302.9" x2="680" y2="302.9" stroke="#303030" stroke-width="1"/><text x="56" y="306.9" fill="#a2a2a2" text-anchor="end">1.0 ms</text>
+<line x1="64" y1="246.3" x2="680" y2="246.3" stroke="#303030" stroke-width="1"/><text x="56" y="250.3" fill="#a2a2a2" text-anchor="end">10 ms</text>
+<line x1="64" y1="189.7" x2="680" y2="189.7" stroke="#303030" stroke-width="1"/><text x="56" y="193.7" fill="#a2a2a2" text-anchor="end">100 ms</text>
+<line x1="64" y1="133.1" x2="680" y2="133.1" stroke="#303030" stroke-width="1"/><text x="56" y="137.1" fill="#a2a2a2" text-anchor="end">1.0 s</text>
+<line x1="64" y1="76.6" x2="680" y2="76.6" stroke="#303030" stroke-width="1"/><text x="56" y="80.6" fill="#a2a2a2" text-anchor="end">10.0 s</text>
+<line x1="64" y1="20.0" x2="680" y2="20.0" stroke="#303030" stroke-width="1"/><text x="56" y="24.0" fill="#a2a2a2" text-anchor="end">100.0 s</text>
+<line x1="64.0" y1="416" x2="64.0" y2="421" stroke="#303030"/><text x="64.0" y="436" fill="#a2a2a2" text-anchor="middle">300</text>
+<line x1="215.6" y1="416" x2="215.6" y2="421" stroke="#303030"/><text x="215.6" y="436" fill="#a2a2a2" text-anchor="middle">1k</text>
+<line x1="505.4" y1="416" x2="505.4" y2="421" stroke="#303030"/><text x="505.4" y="436" fill="#a2a2a2" text-anchor="middle">10k</text>
+<line x1="680.0" y1="416" x2="680.0" y2="421" stroke="#303030"/><text x="680.0" y="436" fill="#a2a2a2" text-anchor="middle">40k</text>
+<text x="372" y="454" fill="#a2a2a2" text-anchor="middle">needs in the project (log)</text>
+<path d="M64.0,316.3 L215.6,256.9 L505.4,140.5 L680.0,71.8" fill="none" stroke="#ff8a5e" stroke-width="2.5"/>
+<circle cx="64.0" cy="316.3" r="3.5" fill="#ff8a5e"/>
+<circle cx="215.6" cy="256.9" r="3.5" fill="#ff8a5e"/>
+<circle cx="505.4" cy="140.5" r="3.5" fill="#ff8a5e"/>
+<circle cx="680.0" cy="71.8" r="3.5" fill="#ff8a5e"/>
+<path d="M64.0,399.0 L215.6,368.9 L505.4,309.6 L680.0,275.0" fill="none" stroke="#ffb45e" stroke-width="2.5" stroke-dasharray="6 4"/>
+<circle cx="64.0" cy="399.0" r="3.5" fill="#ffb45e"/>
+<circle cx="215.6" cy="368.9" r="3.5" fill="#ffb45e"/>
+<circle cx="505.4" cy="309.6" r="3.5" fill="#ffb45e"/>
+<circle cx="680.0" cy="275.0" r="3.5" fill="#ffb45e"/>
+<path d="M64.0,322.0 L215.6,293.7 L505.4,235.9 L680.0,200.1" fill="none" stroke="#9aa5ad" stroke-width="2.5"/>
+<circle cx="64.0" cy="322.0" r="3.5" fill="#9aa5ad"/>
+<circle cx="215.6" cy="293.7" r="3.5" fill="#9aa5ad"/>
+<circle cx="505.4" cy="235.9" r="3.5" fill="#9aa5ad"/>
+<circle cx="680.0" cy="200.1" r="3.5" fill="#9aa5ad"/>
+<path d="M64.0,372.4 L215.6,338.4 L505.4,300.5 L680.0,263.9" fill="none" stroke="#e4ff3e" stroke-width="2.5"/>
+<circle cx="64.0" cy="372.4" r="3.5" fill="#e4ff3e"/>
+<circle cx="215.6" cy="338.4" r="3.5" fill="#e4ff3e"/>
+<circle cx="505.4" cy="300.5" r="3.5" fill="#e4ff3e"/>
+<circle cx="680.0" cy="263.9" r="3.5" fill="#e4ff3e"/>
+<path d="M64.0,375.5 L215.6,357.3 L505.4,303.8 L680.0,268.7" fill="none" stroke="#7cff9b" stroke-width="2.5" stroke-dasharray="6 4"/>
+<circle cx="64.0" cy="375.5" r="3.5" fill="#7cff9b"/>
+<circle cx="215.6" cy="357.3" r="3.5" fill="#7cff9b"/>
+<circle cx="505.4" cy="303.8" r="3.5" fill="#7cff9b"/>
+<circle cx="680.0" cy="268.7" r="3.5" fill="#7cff9b"/>
+<path d="M64.0,390.7 L215.6,387.4 L505.4,360.4 L680.0,330.9" fill="none" stroke="#2dd4bf" stroke-width="2.5"/>
+<circle cx="64.0" cy="390.7" r="3.5" fill="#2dd4bf"/>
+<circle cx="215.6" cy="387.4" r="3.5" fill="#2dd4bf"/>
+<circle cx="505.4" cy="360.4" r="3.5" fill="#2dd4bf"/>
+<circle cx="680.0" cy="330.9" r="3.5" fill="#2dd4bf"/>
+<path d="M64.0,256.0 L215.6,252.8 L505.4,215.9 L680.0,183.2" fill="none" stroke="#f06ad8" stroke-width="2.5"/>
+<circle cx="64.0" cy="256.0" r="3.5" fill="#f06ad8"/>
+<circle cx="215.6" cy="252.8" r="3.5" fill="#f06ad8"/>
+<circle cx="505.4" cy="215.9" r="3.5" fill="#f06ad8"/>
+<circle cx="680.0" cy="183.2" r="3.5" fill="#f06ad8"/>
+<path d="M64.0,284.3 L215.6,276.0 L505.4,235.0 L680.0,198.9" fill="none" stroke="#f06ad8" stroke-width="2.5" stroke-dasharray="6 4"/>
+<circle cx="64.0" cy="284.3" r="3.5" fill="#f06ad8"/>
+<circle cx="215.6" cy="276.0" r="3.5" fill="#f06ad8"/>
+<circle cx="505.4" cy="235.0" r="3.5" fill="#f06ad8"/>
+<circle cx="680.0" cy="198.9" r="3.5" fill="#f06ad8"/>
+<path d="M64.0,285.3 L215.6,285.4 L505.4,260.8 L680.0,246.9" fill="none" stroke="#5c9eff" stroke-width="2.5"/>
+<circle cx="64.0" cy="285.3" r="3.5" fill="#5c9eff"/>
+<circle cx="215.6" cy="285.4" r="3.5" fill="#5c9eff"/>
+<circle cx="505.4" cy="260.8" r="3.5" fill="#5c9eff"/>
+<circle cx="680.0" cy="246.9" r="3.5" fill="#5c9eff"/>
+<text x="692.0" y="75.8" fill="#ff8a5e">Python · author filter_code: 12.1 s</text>
+<text x="692.0" y="187.2" fill="#f06ad8">ubc Rust · CLI end-to-end: 130 ms</text>
+<text x="692.0" y="204.2" fill="#f06ad8">ubc Rust · warm local server: 69 ms</text>
+<line x1="685.0" y1="200.1" x2="690.0" y2="217.2" stroke="#9aa5ad" stroke-width="1" opacity="0.6"/>
+<text x="692.0" y="221.2" fill="#9aa5ad">Cypher · naive executor: 65 ms</text>
+<text x="692.0" y="250.9" fill="#5c9eff">Neo4j · warm local server: 9.7 ms</text>
+<text x="692.0" y="267.9" fill="#e4ff3e">Cypher · + query planner: 4.9 ms</text>
+<line x1="685.0" y1="268.7" x2="690.0" y2="280.9" stroke="#7cff9b" stroke-width="1" opacity="0.6"/>
+<text x="692.0" y="284.9" fill="#7cff9b">Cypher · + Cython: 4.0 ms</text>
+<line x1="685.0" y1="275.0" x2="690.0" y2="297.9" stroke="#ffb45e" stroke-width="1" opacity="0.6"/>
+<text x="692.0" y="301.9" fill="#ffb45e">Python · hand-indexed (expert): 3.1 ms</text>
+<text x="692.0" y="334.9" fill="#2dd4bf">Cypher · + bitmap index: 0.32 ms</text>
+<line x1="650.0" y1="79.8" x2="650.0" y2="322.9" stroke="#e4ff3e" stroke-width="2"/><path d="M646.0,79.8 L654.0,79.8 L650.0,73.8 Z" fill="#e4ff3e"/><path d="M646.0,322.9 L654.0,322.9 L650.0,328.9 Z" fill="#e4ff3e"/><text x="640.0" y="205.3" fill="#e4ff3e" text-anchor="end" font-weight="700">38 000×</text>
+</svg>
