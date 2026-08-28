@@ -25,6 +25,24 @@ mdc: true
 
 <div class="muted small mt-6">Lukas Failer</div>
 
+<!--
+Framing:
+- This is the framing from the brief, section 3.
+- The problem is not the query pain itself.
+- The problem is the decision.
+- We have proven internally that the same selection can be expressed in Cypher.
+- Should that ability become part of the open-source tooling?
+- Or should open source stay Python-only, with Cypher commercial?
+- What does either choice mean for useblocks?
+- The question has a technical half and a strategic half.
+- The two halves are entangled.
+
+Appendix:
+- Everything after the "Backlog" divider is kept for questions and deep dives.
+- It is not part of the main run-through.
+- It holds the full benchmark table, the task and framing, and the engine internals.
+-->
+
 ---
 class: intro
 ---
@@ -403,7 +421,7 @@ Built:
 - It is the "nobody rewrites their filters by hand" piece of the recommendation.
 
 Proof:
-- Benchmark engine: every lane, 5 query types, 100 to 40 000 needs, one command.
+- Benchmark engine: every lane, 5 query types, 300 to 40 000 needs, one command.
 - Parity vs the Rust engine: the same queries into my engine and commercial ubc.
 - The rows match exactly, 5 out of 5.
 - Tests and security demo: 56 tests across three executors.
@@ -448,10 +466,6 @@ Proof:
 <div class="cols mt-3">
 <div>
 
-- a loop over every need, run fresh for **every directive** in the docs
-- the "does anything link here?" check scans all needs **again**, inside the loop
-- 40 000 × 40 000 comparisons
-
 ```python
 for n in needs:              # outer: every need
     for other in needs:      # inner: every need AGAIN
@@ -480,9 +494,14 @@ for n in needs:              # outer: every need
 </div>
 
 <!--
+How it works:
+- A loop over every need, evaluated per need, per directive, on every build.
+- The "does anything link here?" check scans all needs again, inside the loop.
+- That is 40 000 × 40 000 comparisons.
+
+Why it matters:
 - This is the shape real filters in the wild have.
 - The author writes the algorithm, and the algorithm is a nested scan.
-- sphinx-needs evaluates it per need, per directive, on every build.
 - sphinx-needs #1665 (Feb 2026) is a live user hitting exactly this.
 - They got wrong "untraced" tables from a filter of this shape.
 -->
@@ -499,9 +518,6 @@ for n in needs:              # outer: every need
 
 <div class="cols mt-3">
 <div>
-
-- one pass first records, for every link, its target — a plain dict
-- "is REQ_001 traced?" stops being a scan and becomes one lookup
 
 ```python
 incoming = set()
@@ -534,8 +550,13 @@ type == 'swreq' and id not in incoming
 </div>
 
 <!--
+How it works:
+- One pass records, for every link, its target — a plain dict.
+- "Is REQ_001 traced?" stops being a scan and becomes one lookup.
+- Same answer as the author's version, computed by building an index first.
+
+Why it matters:
 - This is the performance-aware engineer's version.
-- It is the same answer, computed by building an index first.
 - Two limits matter for the argument.
 - First: the index only serves one query shape.
 - A different question needs a different index.
@@ -556,9 +577,6 @@ type == 'swreq' and id not in incoming
 
 <div class="cols mt-3">
 <div>
-
-- the query text is parsed into a tree, and this executor walks the tree **literally**
-- every `swreq` is a candidate, and the inner pattern is re-searched for each one
 
 ```python
 for r in by_type["swreq"]:
@@ -598,6 +616,7 @@ for r in by_type["swreq"]:
 - For example: Match(label=swreq), then Where(Not(PatternPredicate(...))).
 - The reference executor walks that structure exactly as written.
 - It does no rewriting at all.
+- Every swreq is a candidate, and the inner pattern is re-searched for each one.
 - It is the honest baseline for the planner.
 - Whatever the planner gains is measured against this.
 - Same language, same data, same machine.
@@ -615,10 +634,6 @@ for r in by_type["swreq"]:
 
 <div class="cols mt-3">
 <div>
-
-- **1 · pushdown** — start from the smallest bucket: 39 998 → 506
-- **2 · decorrelation** — the inner pattern runs once, not per candidate
-- **3 · compiled WHERE** — the filter becomes one function, not a tree walk
 
 ```python
 cands = by_type["swreq"]   # 1 · pushdown
@@ -654,6 +669,12 @@ rows  = [r for r in cands
 </v-click>
 
 <!--
+The three rewrites:
+- 1 · pushdown — start from the smallest bucket: 39 998 → 506.
+- 2 · decorrelation — the inner pattern runs once, not per candidate.
+- 3 · compiled WHERE — the filter becomes one function, not a tree walk.
+
+Why it matters:
 - Same parser and same tree as the reference executor.
 - The difference: the planner rewrites the plan before anything runs.
 - The sentence in the box is the entire technical argument.
@@ -675,11 +696,6 @@ rows  = [r for r in cands
 
 <div class="cols mt-3">
 <div>
-
-- not a new strategy: the planner's **unchanged** Python file, compiled to C
-- same algorithm, same language, same rows
-- 4.9 → 4.0 ms, about **1.2×**
-- the planner's rewrite was **13×**
 
 ```bash
 ./scripts/build_cython.sh   # optimized.py -> optimized.so
@@ -713,10 +729,11 @@ rows  = [r for r in cands
 
 <!--
 - Yes, the Cython lane is still Cypher.
-- It is the planned executor's source file, translated to C and compiled.
+- It is the planned executor's unchanged source file, translated to C and compiled.
 - Same algorithm, same language, same rows.
 - The only change is that the Python interpreter is out of the loop.
-- That is why it only buys about 1.2×.
+- That is why it only buys about 1.2×: 4.9 ms to 4.0 ms.
+- The planner's rewrite, on the same file, was 13×.
 - The lane exists to isolate "faster machine code" from "better plan".
 - It shows which of the two carries the result.
 - It comes before the bitmap lane on purpose: it compiles the planner, not the bitmap.
@@ -734,11 +751,6 @@ rows  = [r for r in cands
 
 <div class="cols mt-3">
 <div>
-
-- at load, every need becomes a bit position
-- one bitmap is built per type, per value and per edge kind
-- the whole `WHERE` collapses into bit algebra
-- Python's big integers **are** bitsets: the `&` runs in C, 64 needs per instruction
 
 ```python
 result = swreq_bm & ~incoming_bm   # two C-speed ops
@@ -761,7 +773,14 @@ swreq         1   0   0   1   0   1   0   0
 </div>
 
 <!--
+How it works:
+- At load, every need becomes a bit position.
+- One bitmap is built per type, per value and per edge kind.
+- The whole WHERE collapses into bit algebra.
+- Python's big integers are bitsets: the & runs in C, 64 needs per instruction.
 - This is a third executor behind the same parser.
+
+Limits:
 - Bitmaps can only express per-need set logic.
 - That means labels, attribute values, and incoming or outgoing edge existence.
 - A multi-node join does not fit that shape.
@@ -769,6 +788,8 @@ swreq         1   0   0   1   0   1   0   0
 - The engine detects those and hands the query to the planner.
 - That is safe: both executors pass the same 56 tests.
 - They must return identical rows, so the fallback changes speed, never answers.
+
+Index cost:
 - The index build is a one-time cost at load: 112 ms at 40 000 needs.
 - While the data does not change, every supported query is near-instant.
 - When needs change, the bitmaps are rebuilt on the next load.
@@ -822,31 +843,33 @@ swreq         1   0   0   1   0   1   0   0
 
 <div class="mt-4"></div>
 
-- **9 lanes**:
-  - my six implementations, each measured in a fresh subprocess
-  - the commercial `ubc` Rust binary, as a cold CLI call and as a warm local server
-  - Neo4j, a real server in a throwaway Docker container
+- **9 lanes**: my six implementations, the commercial `ubc` Rust binary, and Neo4j
 - **4 sizes**: 300 to 40 000 needs
 - **identical rows** are enforced across all lanes, and any mismatch aborts the run
-- **best of 5** runs per data point rules out CPU noise and warm caches
 
 <div class="colhead mt-5"><b>5 workloads</b> · the question each one asks</div>
 
 <div class="flowrow mt-3" v-click="1">
-<div class="node"><div class="t">1 · attribute filter</div><div class="d">which software requirements are open?</div></div>
+<div class="node"><div class="t">1 · attribute filter</div><div class="d">which software requirements are open?</div><div class="q">MATCH &#40;r:swreq&#41;<br>WHERE r.status = 'open'<br>RETURN r</div></div>
 <div class="arr">→</div>
-<div class="node"><div class="t">2 · anti-join</div><div class="d">which ones does no test point at?</div></div>
+<div class="node"><div class="t">2 · anti-join</div><div class="d">which ones does no test point at?</div><div class="q">MATCH &#40;r:swreq&#41;<br>WHERE NOT &#40; &#40;r&#41;&lt;-[:links]-&#40;:test&#41; &#41;<br>RETURN r</div></div>
 <div class="arr">→</div>
-<div class="node"><div class="t">3 · two-hop join</div><div class="d">which ones sit under an ASIL-D safety goal?</div></div>
+<div class="node"><div class="t">3 · two-hop join</div><div class="d">which ones sit under an ASIL-D safety goal?</div><div class="q">MATCH &#40;sr:sysreq&#41;-[:implements]-&gt;&#40;f:fsr&#41;<br>&nbsp;&nbsp;-[:derives_from]-&gt;&#40;s:safety_goal&#41;<br>WHERE s.asil = 'D'<br>RETURN sr</div></div>
 <div class="arr">→</div>
-<div class="node"><div class="t">4 · transitive closure</div><div class="d">what reaches that safety goal, at any depth?</div></div>
+<div class="node"><div class="t">4 · transitive closure</div><div class="d">what reaches that safety goal, at any depth?</div><div class="q">MATCH &#40;h:safety_goal&#41;&lt;-[&#42;1..]-&#40;n&#41;<br>WHERE h.id = 'SG_0'<br>RETURN n</div></div>
 <div class="arr">→</div>
-<div class="node hot"><div class="t">5 · all of it at once</div><div class="d">open requirements, on an open req, that nothing implements</div></div>
+<div class="node hot"><div class="t">5 · all of it at once</div><div class="d">open requirements, on an open req, that nothing implements</div><div class="q">MATCH &#40;sr:swreq&#41;-[:links]-&gt;&#40;r:req&#41;<br>WHERE sr.status = 'open'<br>&nbsp;&nbsp;AND r.status = 'open'<br>&nbsp;&nbsp;AND NOT &#40; &#40;sr&#41;&lt;-[:implements]-&#40;:impl&#41; &#41;<br>RETURN sr</div></div>
 </div>
 
 <!--
+Lanes:
+- Each of my six implementations is measured in a fresh subprocess.
+- The commercial ubc binary is measured as a cold CLI call and as a warm local server.
+- Neo4j runs as a real server in a throwaway Docker container.
+- Best of 5 runs per data point rules out CPU noise and warm caches.
+
+Workloads:
 - Workload 5 is the complex one, added after the review question "were these all simple queries?".
-- Its Cypher: MATCH (sr:swreq)-[:links]->(r:req) WHERE sr.status = 'open' AND r.status = 'open' AND NOT ( (sr)<-[:implements]-(:impl) ) RETURN sr.
 - It is a join, two attribute predicates and an anti-join in a single question.
 - Raw runs and machine metadata are committed to the repo.
 - One command runs everything: bench/benchmark.py
@@ -917,10 +940,8 @@ swreq         1   0   0   1   0   1   0   0
 
 <div class="mt-3"></div>
 
-- 12 selection tasks, written in plain English.
-- The LLM sees only a schema description and the task — the same text for both languages.
-- It writes one `filter_string` and one Cypher query per task.
-- Both answers run against the real graph and are checked against the known-correct result.
+- 12 tasks in plain English — one `filter_string` and one Cypher query each.
+- The prompt is one text card: need types, fields, link names, and that language's syntax rules.
 
 <v-click>
 
@@ -932,21 +953,20 @@ swreq         1   0   0   1   0   1   0   0
 
 </v-click>
 
-<v-click>
-
-<div class="muted small mt-3">Why not writable: a <code>filter_string</code> is one boolean expression over <b>the current need's own fields</b> — it cannot look at another need or follow an edge.</div>
-
-<div class="verdict mt-3 small">Simple tasks: both languages work. The gap is <b>reach</b> — 3 tasks cannot be written as a filter_string at all, and Cypher solved 2 of them.</div>
-
-</v-click>
-
 <div class="muted xsmall mt-2">Script: <code>bench/llm_eval.py</code> · raw model answers + scoring: <code>bench/results/llm_eval.json</code></div>
 
 <!--
 - Read the experiment honestly, and do not overclaim.
+- Simple tasks: both languages work — the gap is reach, not fluency.
+- Why not writable: a filter_string is one boolean expression over the current need's own fields.
+- It cannot look at another need or follow an edge.
+- No repo, no example queries, no data were given.
+- Both answers run on the real graph, scored against a known-correct result.
 - On the 9 tasks expressible in both languages: filter_string 9/9, Cypher 8/9.
-- The prompt contained a complete schema card.
+- The schema card lists 19 need types, 6 attributes and 21 link fields.
+- It also states the rule that every link field X has a reverse field X_back.
 - With it, the LLM even enumerated all 21 reverse-link fields correctly.
+- The syntax block names the exact subset each language may use.
 - So on single-need selections the difference is negligible.
 - The 3 cross-need tasks are where it breaks.
 - Task 1: swreqs no test points at.
@@ -964,9 +984,7 @@ swreq         1   0   0   1   0   1   0   0
 - Method: claude CLI, model claude-sonnet-5, run from a neutral directory.
 - Ground truths are computed in plain dict code in bench/llm_eval.py.
 - Every raw answer is recorded in bench/results/llm_eval.json.
-- The model saw nothing but a prompt.
-- The prompt had a schema card, the language rules, and the task sentence.
-- No repo access, no example queries, no data.
+- The model saw nothing but the prompt: schema card, language rules, task sentence.
 - Both languages started from identical information.
 - So the difference in results is the language, not the prompt.
 -->
@@ -1182,81 +1200,6 @@ class: intro
 - The language is a public standard nobody owns.
 - The engine is a year of real architecture.
 - The intent layer is stateful, audited and domain-deep.
--->
-
----
-
-<div class="ub-kicker">strategy · the ai dimension</div>
-
-## Does open querying attack the AI moat?
-
-<div class="ub-rule"></div>
-
-<div class="cols mt-3">
-<div>
-
-- a query language is the interface agents already speak
-- an open engine means anyone can put a CLI or an MCP server over it
-- the moat is the **intent layer**: writes, workflows, gates, audit
-
-<div class="limits mt-3"><code>needs.json</code> loads into Neo4j today — the read side is already reachable without us.</div>
-
-</div>
-<figure class="diagram">
-
-<svg viewBox="0 0 340 190" class="graphsvg" style="max-height:225px" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <marker id="agr" markerWidth="9" markerHeight="9" refX="8" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7" fill="none" stroke="#7CFF9B" stroke-width="1.6"/></marker>
-    <marker id="agw" markerWidth="9" markerHeight="9" refX="8" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7" fill="none" stroke="#ff6b6b" stroke-width="1.6"/></marker>
-  </defs>
-  <rect x="6" y="72" width="86" height="44" rx="10" fill="#141617" stroke="#303030"/>
-  <text x="49" y="92" text-anchor="middle" fill="#f3f3f3" style="font: 700 11px Inter, sans-serif">AI agent</text>
-  <text x="49" y="107" text-anchor="middle" fill="#a2a2a2" style="font: 9px 'JetBrains Mono', monospace">LLM · MCP</text>
-  <line x1="98" y1="82" x2="188" y2="46" stroke="#7CFF9B" stroke-width="2" marker-end="url(#agr)"/>
-  <text x="104" y="34" fill="#7CFF9B" style="font: 700 10px 'JetBrains Mono', monospace">read · MATCH</text>
-  <line x1="98" y1="106" x2="188" y2="146" stroke="#ff6b6b" stroke-width="2" marker-end="url(#agw)"/>
-  <text x="104" y="176" fill="#ff6b6b" style="font: 700 10px 'JetBrains Mono', monospace">write · gated</text>
-  <rect x="196" y="14" width="138" height="62" rx="10" fill="#0e140f" stroke="#7CFF9B" stroke-width="1.6" stroke-dasharray="6 4"/>
-  <text x="210" y="38" fill="#7CFF9B" style="font: 800 11px Inter, sans-serif">OPEN · the graph</text>
-  <text x="210" y="56" fill="#a2a2a2" style="font: 9px Inter, sans-serif">published build output</text>
-  <text x="210" y="69" fill="#a2a2a2" style="font: 9px Inter, sans-serif">no state, no secrets</text>
-  <rect x="196" y="112" width="138" height="66" rx="10" fill="#140e0e" stroke="#ff6b6b" stroke-width="1.6"/>
-  <text x="210" y="136" fill="#ff6b6b" style="font: 800 11px Inter, sans-serif">🔒 THE INTENT LAYER</text>
-  <text x="210" y="154" fill="#a2a2a2" style="font: 9px Inter, sans-serif">workflows · gates · RBAC</text>
-  <text x="210" y="167" fill="#a2a2a2" style="font: 9px Inter, sans-serif">audit · the write path</text>
-</svg>
-
-<figcaption>A MATCH never reaches the lower box.</figcaption>
-</figure>
-</div>
-
-<v-click>
-
-<div class="arrowbox mt-4"><b>Open reads do not attack the moat — waiting does.</b><div class="muted small mt-1">If someone else ships the open agent surface first, they set the standard and we integrate with theirs.</div></div>
-
-</v-click>
-
-<!--
-- The brief asks this directly, under the AI and intent-layer dimension.
-- A declarative query language is a first-class interface for LLMs and agents.
-- If the engine is open source, a third party can put a CLI or an MCP over it.
-- They can drive an AI against the graph with very few moving parts.
-- useblocks is building an intent layer and wants agents to operate through it.
-- That is the moat, and it should not be attackable by our own OSS tooling.
-- The evaluation must reach an explicit conclusion.
-- The conclusion: reading the graph is not the intent layer.
-- The moat is stateful: writes, workflows, gates, RBAC, audit.
-- None of that is reachable through a read-only MATCH.
-- An agent that queries the open graph is a lead, not a bypass.
-- Keeping reads closed protects nothing.
-- The data model is open, and needs.json loads into any graph database today.
-- So open querying does not attack the moat, and we can do it.
-- The condition: draw the line at reads, not at the engine.
-- The risk of not opening is that someone else claims the surface first.
-- That could be StrictDoc, a consortium standard, or an MCP over Neo4j.
-- If they do it, they set the standard and we integrate with theirs.
-- If we do it, we set the standard and weaken their play.
-- Every agent user then lands in our funnel.
 -->
 
 ---
@@ -1642,18 +1585,6 @@ class: intro
 
 </v-click>
 
-<!--
-- This is the framing from the brief, section 3.
-- The problem is not the query pain itself.
-- The problem is the decision.
-- We have proven internally that the same selection can be expressed in Cypher.
-- Should that ability become part of the open-source tooling?
-- Or should open source stay Python-only, with Cypher commercial?
-- What does either choice mean for useblocks?
-- The question has a technical half and a strategic half.
-- The two halves are entangled.
--->
-
 ---
 
 <div class="ub-kicker">backlog · part b recap</div>
@@ -1684,6 +1615,81 @@ class: intro
 - The declarative path is better on every axis except one honest tie.
 - If the decision were technical, it would be closed now.
 - It is not, and the next slide says why.
+-->
+
+---
+
+<div class="ub-kicker">backup · the ai dimension</div>
+
+## Does open querying attack the AI moat?
+
+<div class="ub-rule"></div>
+
+<div class="cols mt-3">
+<div>
+
+- a query language is the interface agents already speak
+- an open engine means anyone can put a CLI or an MCP server over it
+- the moat is the **intent layer**: writes, workflows, gates, audit
+
+<div class="limits mt-3"><code>needs.json</code> loads into Neo4j today — the read side is already reachable without us.</div>
+
+</div>
+<figure class="diagram">
+
+<svg viewBox="0 0 340 190" class="graphsvg" style="max-height:225px" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="agr" markerWidth="9" markerHeight="9" refX="8" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7" fill="none" stroke="#7CFF9B" stroke-width="1.6"/></marker>
+    <marker id="agw" markerWidth="9" markerHeight="9" refX="8" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7" fill="none" stroke="#ff6b6b" stroke-width="1.6"/></marker>
+  </defs>
+  <rect x="6" y="72" width="86" height="44" rx="10" fill="#141617" stroke="#303030"/>
+  <text x="49" y="92" text-anchor="middle" fill="#f3f3f3" style="font: 700 11px Inter, sans-serif">AI agent</text>
+  <text x="49" y="107" text-anchor="middle" fill="#a2a2a2" style="font: 9px 'JetBrains Mono', monospace">LLM · MCP</text>
+  <line x1="98" y1="82" x2="188" y2="46" stroke="#7CFF9B" stroke-width="2" marker-end="url(#agr)"/>
+  <text x="104" y="34" fill="#7CFF9B" style="font: 700 10px 'JetBrains Mono', monospace">read · MATCH</text>
+  <line x1="98" y1="106" x2="188" y2="146" stroke="#ff6b6b" stroke-width="2" marker-end="url(#agw)"/>
+  <text x="104" y="176" fill="#ff6b6b" style="font: 700 10px 'JetBrains Mono', monospace">write · gated</text>
+  <rect x="196" y="14" width="138" height="62" rx="10" fill="#0e140f" stroke="#7CFF9B" stroke-width="1.6" stroke-dasharray="6 4"/>
+  <text x="210" y="38" fill="#7CFF9B" style="font: 800 11px Inter, sans-serif">OPEN · the graph</text>
+  <text x="210" y="56" fill="#a2a2a2" style="font: 9px Inter, sans-serif">published build output</text>
+  <text x="210" y="69" fill="#a2a2a2" style="font: 9px Inter, sans-serif">no state, no secrets</text>
+  <rect x="196" y="112" width="138" height="66" rx="10" fill="#140e0e" stroke="#ff6b6b" stroke-width="1.6"/>
+  <text x="210" y="136" fill="#ff6b6b" style="font: 800 11px Inter, sans-serif">🔒 THE INTENT LAYER</text>
+  <text x="210" y="154" fill="#a2a2a2" style="font: 9px Inter, sans-serif">workflows · gates · RBAC</text>
+  <text x="210" y="167" fill="#a2a2a2" style="font: 9px Inter, sans-serif">audit · the write path</text>
+</svg>
+
+<figcaption>A MATCH never reaches the lower box.</figcaption>
+</figure>
+</div>
+
+<v-click>
+
+<div class="arrowbox mt-4"><b>Open reads do not attack the moat — waiting does.</b><div class="muted small mt-1">If someone else ships the open agent surface first, they set the standard and we integrate with theirs.</div></div>
+
+</v-click>
+
+<!--
+- The brief asks this directly, under the AI and intent-layer dimension.
+- A declarative query language is a first-class interface for LLMs and agents.
+- If the engine is open source, a third party can put a CLI or an MCP over it.
+- They can drive an AI against the graph with very few moving parts.
+- useblocks is building an intent layer and wants agents to operate through it.
+- That is the moat, and it should not be attackable by our own OSS tooling.
+- The evaluation must reach an explicit conclusion.
+- The conclusion: reading the graph is not the intent layer.
+- The moat is stateful: writes, workflows, gates, RBAC, audit.
+- None of that is reachable through a read-only MATCH.
+- An agent that queries the open graph is a lead, not a bypass.
+- Keeping reads closed protects nothing.
+- The data model is open, and needs.json loads into any graph database today.
+- So open querying does not attack the moat, and we can do it.
+- The condition: draw the line at reads, not at the engine.
+- The risk of not opening is that someone else claims the surface first.
+- That could be StrictDoc, a consortium standard, or an MCP over Neo4j.
+- If they do it, they set the standard and we integrate with theirs.
+- If we do it, we set the standard and weaken their play.
+- Every agent user then lands in our funnel.
 -->
 
 ---

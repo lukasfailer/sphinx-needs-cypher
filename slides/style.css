@@ -63,6 +63,18 @@ th { background: var(--ub-panel); color: var(--ub-lime-soft); }
 .node .t { font-weight: 700; font-size: 0.85rem; }
 .node .d { color: var(--ub-muted); font-size: 0.72rem; margin-top: 0.15rem; }
 .node .dgr { color: var(--ub-bad); font-size: 0.7rem; margin-top: 0.35rem; }
+/* the query a workload box asks — small enough to sit under the plain-English line */
+.node .q {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.52rem;
+  line-height: 1.5;
+  color: var(--ub-lime-soft);
+  margin-top: 0.45rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--ub-line);
+  overflow-wrap: anywhere;
+  font-variant-ligatures: none;
+}
 .ladder td { border: none; border-bottom: 1px solid var(--ub-line); font-family: "JetBrains Mono", monospace; padding: 5px 8px; }
 .tight table { font-size: 0.76rem; }
 .tight th, .tight td { padding: 4px 8px; }
