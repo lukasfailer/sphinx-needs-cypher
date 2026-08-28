@@ -21,6 +21,11 @@ dist/
 bench/graph_*.json
 bench/graphs/
 
+# per-run benchmark output; the committed baseline is results.json/.csv,
+# promoted deliberately by copying a run over it
+bench/results/results-*.json
+bench/results/results-*.csv
+
 # cython intermediates
 build/cython/
 *.c

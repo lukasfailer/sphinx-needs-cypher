@@ -73,6 +73,12 @@ with all raw runs and environment metadata committed under `bench/results/`.
 Every lane must return the identical row count per workload per size or the run
 aborts — verified across all 172 measured rows in the committed results.
 
+Each run writes its own `bench/results/results-<UTC timestamp>.{json,csv}` pair,
+so no run overwrites another. The committed `results.json`/`results.csv` are the
+blessed baseline quoted above and are never touched by a run; promote a new run
+by copying it over them. `bench/plot.py` charts that baseline unless you point
+`--results` at a specific run.
+
 | Lane | What the number includes |
 | --- | --- |
 | Python author / expert | in-process call, graph already loaded; back-link build reported as `load_ms` |

@@ -52,9 +52,14 @@ def main() -> None:
 
     ap = argparse.ArgumentParser()
     ap.add_argument("workload", nargs="?", default="B_antijoin")
+    # Defaults to the committed baseline on purpose: this script overwrites a
+    # tracked deck asset, so a throwaway run must never land in it by accident.
+    # Point --results at a bench/results/results-<stamp>.csv to plot a fresh run.
     ap.add_argument("--results", default=str(ROOT / "bench/results/results.csv"),
-                    help="results.csv to plot (default: bench/results/results.csv)")
+                    help="results csv to plot (default: the committed "
+                         "bench/results/results.csv baseline)")
     args = ap.parse_args()
+    print(f"plotting {args.results}")
     workload = args.workload
     rows = list(csv.DictReader(Path(args.results).open()))
     data: dict[str, list[tuple[float, float]]] = {}
@@ -63,8 +68,16 @@ def main() -> None:
             continue
         data.setdefault(r["impl"], []).append((float(r["needs"]), float(r["ms_best"])))
 
+    if not data:
+        raise SystemExit(
+            f"no rows for workload {workload!r} in {args.results}")
     xs = sorted({x for pts in data.values() for x, _ in pts})
     ys = [y for pts in data.values() for _, y in pts]
+    if len(xs) < 2:
+        raise SystemExit(
+            f"{args.results} covers only one size ({int(xs[0])} needs) — the chart "
+            f"plots ms against graph size, so it needs at least two. Re-run the "
+            f"benchmark across several sizes, or pass --results with a fuller run.")
     x0, x1 = math.log10(min(xs)), math.log10(max(xs))
     y0, y1 = math.log10(min(ys)), math.log10(max(ys))
     y0, y1 = math.floor(y0), math.ceil(y1)

@@ -29,8 +29,10 @@ What it does:
 * Cross-checks that every implementation returns the same row count per
   workload, per size — a benchmark that returns different answers is measuring
   bugs, not speed.
-* Writes ``bench/results/results.json`` (all raw runs + environment metadata)
-  and ``bench/results/results.csv``, and prints the summary table.
+* Writes ``bench/results/results-<UTC timestamp>.json`` (all raw runs +
+  environment metadata) and the matching ``.csv``, then prints the summary
+  table. Each run lands in its own timestamped pair, so no run ever overwrites
+  another — or the committed ``results.json`` baseline the README quotes.
 
 Why these sizes (receipts are the linked sphinx-needs issues):
     292     the real sphinx-needs-demo project (correctness work in this repo)
@@ -247,8 +249,11 @@ def main() -> None:
         if args.with_neo4j:
             stop_neo4j()
 
+    run_at = datetime.now(timezone.utc)
+    stamp = run_at.strftime("%Y%m%dT%H%M%SZ")
+
     meta = {
-        "timestamp": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "timestamp": run_at.isoformat(timespec="seconds"),
         "python": sys.version.split()[0],
         "implementation": platform.python_implementation(),
         "cpu": cpu_model(),
@@ -273,17 +278,25 @@ def main() -> None:
         "command": " ".join(sys.argv),
     }
 
+    # Every run gets its own timestamped pair, so a quick smoke run can never
+    # overwrite the blessed results the README quotes. Promote a run to the
+    # baseline deliberately:
+    #     cp bench/results/results-<stamp>.json bench/results/results.json
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / "results.json").write_text(
+    json_path = out_dir / f"results-{stamp}.json"
+    csv_path = out_dir / f"results-{stamp}.csv"
+    json_path.write_text(
         json.dumps({"meta": meta, "rows": rows}, indent=2) + "\n")
-    with open(out_dir / "results.csv", "w", newline="") as f:
+    with open(csv_path, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=[
             "size", "needs", "workload", "impl", "ms_best", "ms_median", "count", "load_ms"])
         w.writeheader()
         for r in rows:
             w.writerow({k: r[k] for k in w.fieldnames})
-    print(f"\nwrote {out_dir / 'results.json'} and results.csv")
+    print(f"\nwrote {json_path.name} and {csv_path.name} in {out_dir}")
+    print(f"      (the committed baseline results.json/.csv is left untouched; "
+          f"copy over it to promote this run)")
 
     print_table(rows)
 
